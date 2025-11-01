@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroCast IQ - Your Clear Air Compass</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* General Setup */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow: hidden; /* Prevents scrollbars on the full-page hero */
+        }
+
+        /* Hero Section Background */
+        .hero-container {
+            height: 100vh;
+            width: 100vw;
+            /* Placeholder background image from Unsplash */
+            background-image: url('https://images.unsplash.com/photo-1596701956163-54479e9a5a3a?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Glassmorphism Card */
+        .main-card {
+            width: 100%;
+            max-width: 950px;
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px); /* For Safari support */
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Top Bar Icons */
+        .top-bar {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .top-bar i {
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .top-bar i:hover {
+            color: #fff;
+        }
+
+        /* Main Content Grid */
+        .content-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            gap: 20px;
+        }
+
+        .widget {
+            flex: 1;
+        }
+
+        /* Central AQI Display */
+        .aqi-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .aqi-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 5px solid rgba(55, 235, 165, 0.7);
+            box-shadow: 0 0 20px rgba(55, 235, 165, 0.5), inset 0 0 15px rgba(55, 235, 165, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .aqi-value p {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #37eba5;
+            margin-bottom: 5px;
+        }
+
+        .aqi-value h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .pollutants {
+            display: flex;
+            gap: 20px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Graph and Map Widgets */
+        .prediction-graph,
+        .world-map {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .prediction-graph h4 {
+            width: 100%;
+            margin-bottom: 10px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .prediction-graph img,
+        .world-map img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0.8;
+        }
+
+        /* Bottom Content */
+        .bottom-content {
+            text-align: center;
+        }
+
+        .bottom-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .bottom-content p {
+            font-size: 1rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        .cta-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+        }
+
+        .cta-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-container {
+                align-items: flex-start;
+                padding-top: 5vh;
+                overflow-y: auto;
+            }
+            .content-grid {
+                flex-direction: column;
+                gap: 25px;
+            }
+            .widget {
+                width: 100%;
+                max-width: 350px;
+            }
+            .aqi-display {
+                order: -1; /* Move AQI display to the top on mobile */
+            }
+            .bottom-content h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-container">
+        <div class="main-card">
+            <div class="top-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <i class="fa-solid fa-bars"></i>
+            </div>
+
+            <div class="content-grid">
+                <div class="widget prediction-graph">
+                    <h4>Future Prediction</h4>
+                    <img src="https://i.imgur.com/8F2o8Uv.png" alt="Air quality prediction graph">
+                </div>
+
+                <div class="widget aqi-display">
+                    <div class="aqi-circle">
+                        <div class="aqi-value">
+                            <p>AQI GOOD</p>
+                            <h1 id="aqi-number">28</h1>
+                        </div>
+                    </div>
+                    <div class="pollutants">
+                        <span>PM2.5</span>
+                        <span>CO₂</span>
+                        <span>SO₂</span>
+                        <span>O₃</span>
+                    </div>
+                </div>
+
+                <div class="widget world-map">
+                     <img src="https://i.imgur.com/GXBkvf7.png" alt="World map with air quality indicators">
+                </div>
+            </div>
+
+            <div class="bottom-content">
+                <h2>AeroCast IQ</h2>
+                <p>Your Clear Air Compass</p>
+                <button class="cta-button">Get Started</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const aqiNumberElement = document.getElementById('aqi-number');
+
+            // Function to update the AQI number with a random value
+            function updateAqi() {
+                // Generate a random number between 25 and 35 for a "GOOD" rating
+                const randomAqi = Math.floor(Math.random() * (35 - 25 + 1)) + 25;
+                aqiNumberElement.textContent = randomAqi;
+            }
+
+            // Update the AQI every 3 seconds to simulate live data
+            setInterval(updateAqi, 3000);
+        });
+    </script>
+
+</body>
+</html>

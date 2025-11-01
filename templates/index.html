@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQI Prediction Form</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+.container {
+  background: #ffffff;
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.25);
+  width: 700px;
+  transition: transform 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-4px);
+}
+
+.container h2 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #2a5298;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px 25px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+  color: #333;
+  font-size: 14px;
+}
+
+input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 14px;
+  background: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  border-color: #2a5298;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(42, 82, 152, 0.3);
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+  grid-column: span 2;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  transform: scale(1.03);
+}
+
+.result {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #1e3c72;
+}
+
+.note {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #666;
+  text-align: center;
+}
+
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🌍 AQI Prediction</h2>
+    <form method="POST" action="/predict" class="form-grid">
+      <div class="form-group">
+        <label for="pm25">PM2.5 AQI Value</label>
+        <input type="number" step="0.1" id="pm25" name="PM2.5_AQI_Value" required>
+      </div>
+      <div class="form-group">
+        <label for="no2">NO₂ AQI Value</label>
+        <input type="number" step="0.1" id="no2" name="NO2_AQI_Value" required>
+      </div>
+      <div class="form-group">
+        <label for="o3">Ozone AQI Value</label>
+        <input type="number" step="0.1" id="o3" name="Ozone_AQI_Value" required>
+      </div>
+      <div class="form-group">
+        <label for="co">CO AQI Value</label>
+        <input type="number" step="0.01" id="co" name="CO_AQI_Value" required>
+      </div>
+      <div class="form-group">
+        <label for="lat">Latitude</label>
+        <input type="number" step="any" id="lat" name="lat" required>
+      </div>
+      <div class="form-group">
+        <label for="lon">Longitude</label>
+        <input type="number" step="any" id="lon" name="lon" required>
+      </div>
+      <button type="submit">🚀 Predict AQI</button>
+    </form>
+
+```
+<!-- Prediction Result or Status/Error -->
+{% if aqi is not none %}
+  <div class="result">
+    <h3>Predicted AQI: {{ aqi }}</h3>
+    <h3>Air Quality Status: {{ status }}</h3>
+  </div>
+{% elif status %}
+  <div class="result">
+    <h3>{{ status }}</h3>
+  </div>
+{% endif %}
+```
+
+  </div>
+</body>
+</html>
