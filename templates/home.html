@@ -3,274 +3,597 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AeroCast IQ - Your Clear Air Compass</title>
+    <title>AirWatch | Real-Time Air Quality Intelligence</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-        /* General Setup */
+        /* --- 0. Base & Color Variables --- */
+        :root {
+            --color-primary: #1e3a8a; /* Navy Blue */
+            --color-secondary: #3b82f6; /* Bright Blue */
+            --color-text: #374151;
+            --color-subtle: #6b7280;
+            --color-bg-light: #f9fafb;
+            --color-aqi-good: #10b981; /* Green */
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth; /* Smooth scrolling for nav links */
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #000;
-            color: #fff;
-            overflow: hidden; /* Prevents scrollbars on the full-page hero */
+            color: var(--color-text);
+            background: var(--color-bg-light);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        /* Hero Section Background */
-        .hero-container {
-            height: 100vh;
-            width: 100vw;
-            /* Placeholder background image from Unsplash */
-            background-image: url('https://images.unsplash.com/photo-1596701956163-54479e9a5a3a?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 25px;
+        }
+        
+        /* --- ANIMATION KEYFRAMES --- */
+        @keyframes fadeInSlideUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* Glassmorphism Card */
-        .main-card {
-            width: 100%;
-            max-width: 950px;
-            background: rgba(0, 0, 0, 0.25);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px); /* For Safari support */
-            border: 1.5px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        @keyframes pulseShadow {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        /* Top Bar Icons */
-        .top-bar {
-            width: 100%;
-            display: flex;
-            justify-content: flex-end;
-            gap: 20px;
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .top-bar i {
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .top-bar i:hover {
-            color: #fff;
-        }
-
-        /* Main Content Grid */
-        .content-grid {
+        /* --- 1. Navigation --- */
+        nav {
+            padding: 15px 50px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
-            gap: 20px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
         }
 
-        .widget {
-            flex: 1;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--color-primary);
         }
 
-        /* Central AQI Display */
-        .aqi-display {
+        .logo i {
+            color: var(--color-secondary);
+            font-size: 1.8rem;
+            transform: rotate(-10deg);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--color-primary);
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-secondary);
+        }
+
+        /* --- 2. Hero Section --- */
+        .hero-section {
+            padding: 100px 0 10px;
+            background: linear-gradient(180deg, #e0f2fe 0%, #ffffff 100%);
+            text-align: center;
+            position: relative;
+            animation: fadeInSlideUp 0.8s ease-out;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            color: var(--color-subtle);
+            margin-bottom: 40px;
+        }
+
+        /* AQI Widget (Pulsing Animation) */
+        .aqi-widget {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            margin-bottom: 50px;
         }
 
-        .aqi-circle {
-            width: 180px;
-            height: 180px;
+        .aqi-ring {
+            width: 160px; 
+            height: 160px;
             border-radius: 50%;
-            border: 5px solid rgba(55, 235, 165, 0.7);
-            box-shadow: 0 0 20px rgba(55, 235, 165, 0.5), inset 0 0 15px rgba(55, 235, 165, 0.3);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
+            background: var(--color-aqi-good);
+            color: white;
+            margin-bottom: 20px;
+            animation: pulseShadow 2s infinite 1s; /* Subtle Pulse */
         }
 
-        .aqi-value p {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #37eba5;
-            margin-bottom: 5px;
-        }
-
-        .aqi-value h1 {
-            font-size: 4rem;
+        .aqi-value {
+            font-size: 3.5rem;
             font-weight: 700;
             line-height: 1;
         }
-
-        .pollutants {
+        
+        /* Search Bar Polish */
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto;
             display: flex;
-            gap: 20px;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.7);
+            border-radius: 50px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: white;
+            border: 3px solid var(--color-secondary);
         }
 
-        /* Graph and Map Widgets */
-        .prediction-graph,
-        .world-map {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 15px;
-            height: 180px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .search-container input {
+            flex-grow: 1;
+            padding: 16px 25px;
+            border: none;
+            font-size: 1rem;
+            outline: none;
         }
 
-        .prediction-graph h4 {
-            width: 100%;
-            margin-bottom: 10px;
-            font-weight: 400;
-            color: rgba(255, 255, 255, 0.8);
+        .search-container button {
+            background: linear-gradient(135deg, var(--color-secondary), #06b6d4);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s;
         }
 
-        .prediction-graph img,
-        .world-map img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            opacity: 0.8;
+        .search-container button:hover {
+            background: var(--color-primary);
+            transform: scale(1.05);
         }
 
-        /* Bottom Content */
-        .bottom-content {
+        /* --- 3. Key Statistics Section (Scroll Animation Ready) --- */
+        .stats-section {
+            padding: 80px 0;
             text-align: center;
+            background: white;
+            margin
         }
 
-        .bottom-content h2 {
+        .stats-header h2 {
             font-size: 2.5rem;
             font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
         }
 
-        .bottom-content p {
-            font-size: 1rem;
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 20px;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .stat-card {
+            padding: 30px;
+            border-radius: 15px;
+            background: var(--color-bg-light);
+            border: 1px solid #e5e7eb;
+            transition: all 0.4s ease; /* Transition for animation */
+            opacity: 0; /* Hidden by default */
+            transform: translateY(20px); /* Initial slide position */
+            cursor: help;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .stat-icon {
+            color: white;
+            background: var(--color-secondary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover .stat-icon {
+             transform: rotateY(180deg); /* Flip icon on hover */
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--color-subtle);
+        }
+
+        /* --- 4. How It Works Section (NEW BLOCK & Animated Flow) --- */
+        .how-it-works-section {
+            padding: 80px 0;
+            text-align: center;
+            background: white;
+        }
+
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 40px;
+            margin-top: 50px;
+            position: relative;
+        }
+
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            height: 2px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .step-card {
+            position: relative;
+            z-index: 5;
+            flex: 1;
+            padding: 20px 10px;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.6s ease-out;
+        }
+
+        .step-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: white;
+            border: 4px solid var(--color-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--color-primary);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .step-card:hover .step-icon-wrapper {
+            background: var(--color-secondary);
+            color: white;
+            transform: rotate(5deg) scale(1.05);
+        }
+        
+        .step-card h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        /* --- 5. Features Section (Scroll Animation Ready) --- */
+        .features-section {
+            background: var(--color-bg-light);
+        }
+
+        .features-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            text-align: left;
+            padding: 30px;
+            border-radius: 15px;
+            background: white;
+            border: 1px solid transparent;
+            border-bottom: 4px solid #e5e7eb; /* Subtle bottom border */
+            transition: all 0.4s ease;
+            opacity: 0; /* Hidden by default */
+            transform: translateY(20px); /* Initial slide position */
+        }
+
+        .feature-card:hover {
+            border-left: 5px solid var(--color-secondary);
+            border-bottom: 4px solid var(--color-secondary); /* Highlighted bottom border */
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .feature-card i {
+            font-size: 2rem;
+            color: var(--color-secondary);
+            margin-bottom: 15px;
+        }
+
+        /* --- 6. CTA Section (Enhanced Button) --- */
+        .cta-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+            text-align: center;
+            color: white;
         }
 
         .cta-button {
-            background-color: #007bff;
-            color: #fff;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, #1e3a8a, #a6b6c5);
+            color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 500;
+            border-radius: 50px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         }
 
         .cta-button:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
+            transform: translateY(-5px);
+            color: white;
+            background: rgb(255, 255, 255);
+            box-shadow: 0 15px 40px rgba(255,255,255,0.4);
+            color: var(--color-secondary);
+        }
+        
+        .cta-button i {
+            transition: transform 0.3s;
         }
 
-        /* Responsive Design */
+        .cta-button:hover i {
+            transform: translateX(5px);
+        }
+
+        /* --- 7. Responsive Adjustments --- */
+        @media (max-width: 900px) {
+            .hero-content h1 { font-size: 2.8rem; }
+            .hero-content p { font-size: 1.1rem; }
+            nav { padding: 20px 25px; }
+            .nav-links { gap: 20px; }
+            .search-container { max-width: 90%; }
+        }
+
         @media (max-width: 768px) {
-            .hero-container {
-                align-items: flex-start;
-                padding-top: 5vh;
-                overflow-y: auto;
-            }
-            .content-grid {
+            .steps-container {
                 flex-direction: column;
-                gap: 25px;
             }
-            .widget {
-                width: 100%;
-                max-width: 350px;
+            .steps-container::before {
+                display: none;
             }
-            .aqi-display {
-                order: -1; /* Move AQI display to the top on mobile */
-            }
-            .bottom-content h2 {
-                font-size: 2rem;
-            }
+        }
+
+        @media (max-width: 600px) {
+            nav { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .nav-links { width: 100%; justify-content: space-around; gap: 0; }
+            .hero-section { padding: 80px 0 50px; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .aqi-ring { width: 120px; height: 120px; }
+            .aqi-value { font-size: 2.8rem; }
+            .container { padding: 0 15px; }
+            .search-container input { padding: 12px 15px; }
+            .search-container button { padding: 12px 20px; }
+            .cta-section h2 { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="hero-container">
-        <div class="main-card">
-            <div class="top-bar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <i class="fa-solid fa-bars"></i>
+    <nav>
+        <div class="logo">
+            <i class="fa-solid fa-wind"></i>
+            <span>AirWatch</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#stats">Data & Metrics</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+    </nav>
+
+    <section id="home" class="hero-section">
+        <div class="container hero-content">
+            <h1>Real-Time Air Quality Monitoring & ML-Powered Forecasts</h1>
+            <p>Know what you breathe. Instant data, accurate predictions, and health recommendations.</p>
+            <button class="cta-button" onclick="window.location.href='/predict'">Predict AQI</button>
+        </div>
+    </section>
+    <section id="stats" class="stats-section">
+        <div class="container">
+            <div class="stats-header">
+                <h2>Air Quality Intelligence</h2>
+                <p style="font-size: 1.1rem; color: var(--color-subtle);">Our commitment to accuracy and coverage.</p>
             </div>
-
-            <div class="content-grid">
-                <div class="widget prediction-graph">
-                    <h4>Future Prediction</h4>
-                    <img src="https://i.imgur.com/8F2o8Uv.png" alt="Air quality prediction graph">
+            
+            <div class="stats-grid">
+                <div class="stat-card scroll-animate">
+                    <div class="stat-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                    <div class="stat-value">97%</div>
+                    <div class="stat-label">Prediction Accuracy</div>
                 </div>
 
-                <div class="widget aqi-display">
-                    <div class="aqi-circle">
-                        <div class="aqi-value">
-                            <p>AQI GOOD</p>
-                            <h1 id="aqi-number">28</h1>
-                        </div>
-                    </div>
-                    <div class="pollutants">
-                        <span>PM2.5</span>
-                        <span>CO₂</span>
-                        <span>SO₂</span>
-                        <span>O₃</span>
-                    </div>
+                <div class="stat-card scroll-animate">
+                    <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="stat-value">0.02s</div>
+                    <div class="stat-label">Prediction Speed</div>
                 </div>
 
-                <div class="widget world-map">
-                     <img src="https://i.imgur.com/GXBkvf7.png" alt="World map with air quality indicators">
+                <div class="stat-card scroll-animate">
+                    <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">Pollutants Used</div>
                 </div>
-            </div>
 
-            <div class="bottom-content">
-                <h2>AeroCast IQ</h2>
-                <p>Your Clear Air Compass</p>
-                <button class="cta-button">Get Started</button>
+                <div class="stat-card scroll-animate">
+                    <div class="stat-icon"><i class="fa-solid fa-globe"></i></div>
+                    <div class="stat-value">10k+</div>
+                    <div class="stat-label">Data Samples</div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
+    <hr style="max-width: 1000px; margin: 0 auto; border-color: rgba(0,0,0,0.05);">
+
+    <section id="how-it-works" class="how-it-works-section">
+        <div class="container">
+            <div class="stats-header">
+                <h2>How It Works</h2>
+                <p style="font-size: 1.1rem; color: var(--color-subtle);">From raw data to personalized insights in three simple steps.</p>
+            </div>
+            <div class="steps-container">
+                <div class="step-card scroll-animate">
+                    <div class="step-icon-wrapper"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+                    <h4>1. Data Collection</h4>
+                    <p>We gather vast amounts of air quality metrics from global and local sensor networks.</p>
+                </div>
+                <div class="step-card scroll-animate" style="animation-delay: 0.1s;">
+                    <div class="step-icon-wrapper"><i class="fa-solid fa-microchip"></i></div>
+                    <h4>2. AI Processing</h4>
+                    <p>Our machine learning models forecast pollution trends with high accuracy (98.5% precision).</p>
+                </div>
+                <div class="step-card scroll-animate" style="animation-delay: 0.2s;">
+                    <div class="step-icon-wrapper"><i class="fa-solid fa-bullhorn"></i></div>
+                    <h4>3. Deliver Action</h4>
+                    <p>You receive instant, actionable alerts and personalized health recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="features-header">
+                <h2>Why Choose AirWatch?</h2>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card scroll-animate">
+                    <i class="fa-solid fa-brain"></i>
+                    <h3>ML Powered Predictions</h3>
+                    <p>Advanced machine learning algorithms analyze multiple parameters for accurate air quality forecasts.</p>
+                </div>
+
+                <div class="feature-card scroll-animate" style="animation-delay: 0.1s;">
+                    <i class="fa-solid fa-bell"></i>
+                    <h3>Instant Air Quality Category</h3>
+                    <p>Automatically classifies air as Good, Moderate and Poor</p>
+                </div>
+
+                <div class="feature-card scroll-animate" style="animation-delay: 0.2s;">
+                    <i class="fa-solid fa-chart-area"></i>
+                    <h3>Fast & Lightweight</h3>
+                    <p>Optimized for real-time predictions within milliseconds.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="about" style="background: var(--color-primary); padding: 20px 0; color: white; text-align: center;">
+>
+        <div class="container">
+            <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto 20px;">
+                AirWatch is a leading platform dedicated to providing accessible, accurate, and actionable air quality information to promote public health and environmental awareness.
+            </p>
+            <div style="opacity: 0.8; font-size: 0.9rem;">
+                &copy; 2025 AirWatch. All rights reserved. | <a href="#" style="color: white; text-decoration: none;">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const aqiNumberElement = document.getElementById('aqi-number');
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    const target = entry.target;
+                    if (entry.isIntersecting) {
+                        // Use a custom class/style to trigger the animation
+                        target.style.opacity = 1;
+                        target.style.transform = 'translateY(0) scale(1)';
+                        target.style.animation = `fadeInSlideUp 0.6s ease-out forwards ${target.dataset.delay || 0}s`;
+                        observer.unobserve(target);
+                    }
+                });
+            }, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }); // Triggers earlier
 
-            // Function to update the AQI number with a random value
-            function updateAqi() {
-                // Generate a random number between 25 and 35 for a "GOOD" rating
-                const randomAqi = Math.floor(Math.random() * (35 - 25 + 1)) + 25;
-                aqiNumberElement.textContent = randomAqi;
-            }
+            // Add animation attributes to elements and observe
+            document.querySelectorAll('.scroll-animate').forEach((el, index) => {
+                el.style.opacity = 0; // Hide initially
+                el.style.transform = 'translateY(20px)'; // Set initial translation
+                el.setAttribute('data-delay', (index * 0.15).toFixed(2)); // Set delay based on index
+                observer.observe(el);
+            });
 
-            // Update the AQI every 3 seconds to simulate live data
-            setInterval(updateAqi, 3000);
+            // Smooth scroll implementation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
         });
     </script>
 
