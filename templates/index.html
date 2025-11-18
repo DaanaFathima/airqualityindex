@@ -1,161 +1,506 @@
 <!DOCTYPE html>
-
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AQI Prediction Form</title>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AirWatch | AQI Prediction</title>
 
-.container {
-  background: #ffffff;
-  padding: 30px 40px;
-  border-radius: 15px;
-  box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.25);
-  width: 700px;
-  transition: transform 0.3s ease;
-}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-.container:hover {
-  transform: translateY(-4px);
-}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
 
-.container h2 {
-  text-align: center;
-  margin-bottom: 15px;
-  color: #2a5298;
-  font-size: 26px;
-  font-weight: 700;
-}
+        body {
+            background: linear-gradient(to bottom, #e0f2fe 0%, #f0f9ff 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0;
+        }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px 25px;
-}
+        /* Header/Navigation */
+        .header {
+            width: 100%;
+            background: white;
+            padding: 20px 50px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-.form-group {
-  margin-bottom: 10px;
-}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e40af;
+            text-decoration: none;
+        }
 
-label {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 4px;
-  color: #333;
-  font-size: 14px;
-}
+        .logo i {
+            font-size: 32px;
+        }
 
-input {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  outline: none;
-  font-size: 14px;
-  background: #f9f9f9;
-  transition: all 0.3s ease;
-}
+        .nav {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
 
-input:focus {
-  border-color: #2a5298;
-  background: #fff;
-  box-shadow: 0 0 8px rgba(42, 82, 152, 0.3);
-}
+        .nav a {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
 
-button {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 15px;
-  grid-column: span 2;
-}
+        .nav a:hover {
+            color: #1e40af;
+        }
 
-button:hover {
-  background: linear-gradient(135deg, #00c6ff, #0072ff);
-  transform: scale(1.03);
-}
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 50px 20px;
+        }
 
-.result {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 18px;
-  font-weight: bold;
-  color: #1e3c72;
-}
+        /* Page Title Section */
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease;
+        }
 
-.note {
-  margin-top: 8px;
-  font-size: 13px;
-  color: #666;
-  text-align: center;
-}
+        .page-title h1 {
+            font-size: 48px;
+            font-weight: 800;
+            color: #1e40af;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
 
+        .page-title p {
+            font-size: 18px;
+            color: #64748b;
+            font-weight: 400;
+        }
 
-  </style>
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Form Container */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 50px 60px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Close button */
+        #exit-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            font-size: 1.3rem;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #exit-button:hover {
+            background: #fee2e2;
+            color: #ef4444;
+            transform: rotate(90deg);
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 40px;
+        }
+
+        /* Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px 35px;
+        }
+
+        /* Input boxes */
+        .input-box {
+            position: relative;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 16px 18px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            outline: none;
+            font-size: 15px;
+            font-weight: 500;
+            color: #1e293b;
+            transition: all 0.3s;
+        }
+
+        .input-box input:focus {
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-box label {
+            position: absolute;
+            left: 18px;
+            top: 16px;
+            color: #64748b;
+            pointer-events: none;
+            transition: all 0.3s;
+            font-size: 15px;
+            font-weight: 500;
+            background: transparent;
+        }
+
+        .input-box input:focus+label,
+        .input-box input:not(:placeholder-shown)+label {
+            top: -10px;
+            left: 14px;
+            padding: 0 6px;
+            background: white;
+            font-size: 12px;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        /* Submit Button */
+        button[type="submit"] {
+            grid-column: span 2;
+            padding: 16px;
+            border-radius: 50px;
+            background: #4f46e5;
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 17px;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+        }
+
+        button[type="submit"]:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+        /* Result Box */
+        #result-box {
+            margin-top: 35px;
+            padding: 30px;
+            border-radius: 16px;
+            background: #f0f9ff;
+            border: 2px solid #bae6fd;
+            font-size: 16px;
+            text-align: center;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-value {
+            font-size: 52px;
+            font-weight: 800;
+            color: #1e40af;
+            margin: 15px 0;
+            display: block;
+        }
+
+        .result-label {
+            color: #64748b;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .result-status {
+            display: inline-block;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 15px;
+            margin-top: 15px;
+        }
+
+        .status-good { 
+            background: #dcfce7; 
+            color: #16a34a; 
+        }
+        
+        .status-moderate { 
+            background: #fef3c7; 
+            color: #d97706; 
+        }
+        
+        .status-poor { 
+            background: #fee2e2; 
+            color: #dc2626; 
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .page-title h1 {
+                font-size: 32px;
+            }
+
+            .page-title p {
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 35px 25px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            button[type="submit"] {
+                grid-column: span 1;
+            }
+
+            h2 {
+                font-size: 26px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <div class="container">
-    <h2>🌍 AQI Prediction</h2>
-    <form method="POST" action="/predict" class="form-grid">
-      <div class="form-group">
-        <label for="pm25">PM2.5 AQI Value</label>
-        <input type="number" step="0.1" id="pm25" name="PM2.5_AQI_Value" required>
-      </div>
-      <div class="form-group">
-        <label for="no2">NO₂ AQI Value</label>
-        <input type="number" step="0.1" id="no2" name="NO2_AQI_Value" required>
-      </div>
-      <div class="form-group">
-        <label for="o3">Ozone AQI Value</label>
-        <input type="number" step="0.1" id="o3" name="Ozone_AQI_Value" required>
-      </div>
-      <div class="form-group">
-        <label for="co">CO AQI Value</label>
-        <input type="number" step="0.01" id="co" name="CO_AQI_Value" required>
-      </div>
-      <div class="form-group">
-        <label for="lat">Latitude</label>
-        <input type="number" step="any" id="lat" name="lat" required>
-      </div>
-      <div class="form-group">
-        <label for="lon">Longitude</label>
-        <input type="number" step="any" id="lon" name="lon" required>
-      </div>
-      <button type="submit">🚀 Predict AQI</button>
-    </form>
 
-```
-<!-- Prediction Result or Status/Error -->
-{% if aqi is not none %}
-  <div class="result">
-    <h3>Predicted AQI: {{ aqi }}</h3>
-    <h3>Air Quality Status: {{ status }}</h3>
-  </div>
-{% elif status %}
-  <div class="result">
-    <h3>{{ status }}</h3>
-  </div>
-{% endif %}
-```
+    <!-- Header -->
+    <div class="header">
+        <a href="/" class="logo">
+            <i class="fa-solid fa-wind"></i>
+            <span>AirWatch</span>
+        </a>
+        <nav class="nav">
+            <a href="/">Home</a>
+        </nav>
+    </div>
 
-  </div>
+    <!-- Main Content -->
+    <div class="main-content">
+        
+        <!-- Page Title -->
+        <div class="page-title">
+            <h1>AQI Prediction</h1>
+            <p>Know what you breathe. Instant data, accurate predictions, and health recommendations.</p>
+        </div>
+
+        <!-- Form Container -->
+        <div class="container">
+
+            <button id="exit-button" onclick="window.location.href='/'">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h2>Enter Air Quality Parameters</h2>
+
+            <form id="aqiForm" class="form-grid">
+
+                <div class="input-box">
+                    <input type="number" step="0.1" name="PM2.5_AQI_Value" required placeholder=" ">
+                    <label>PM2.5 Value</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="number" step="0.1" name="NO2_AQI_Value" required placeholder=" ">
+                    <label>NO₂ Value</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="number" step="0.1" name="Ozone_AQI_Value" required placeholder=" ">
+                    <label>Ozone Value</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="number" step="0.01" name="CO_AQI_Value" required placeholder=" ">
+                    <label>CO Value</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="number" step="any" name="lat" required placeholder=" ">
+                    <label>Latitude</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="number" step="any" name="lng" required placeholder=" ">
+                    <label>Longitude</label>
+                </div>
+
+                <button type="submit">Predict AQI</button>
+            </form>
+
+            <div id="result-box"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("aqiForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            const box = document.getElementById("result-box");
+            const button = event.target.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+
+            // Loading state
+            button.innerHTML = '<span class="loading"></span> Analyzing...';
+            button.disabled = true;
+
+            try {
+                const response = await fetch("/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                
+                // Determine status class
+                let statusClass = 'status-good';
+                if (result.prediction > 100) statusClass = 'status-moderate';
+                if (result.prediction > 200) statusClass = 'status-poor';
+
+                box.style.display = "block";
+                box.innerHTML = `
+                    <div class="result-label">Predicted AQI</div>
+                    <span class="result-value">${result.prediction}</span>
+                    <div class="result-status ${statusClass}">
+                        ${result.status}
+                    </div>
+                `;
+            } catch (err) {
+                box.style.display = "block";
+                box.innerHTML = `
+                    <div style="color: #ef4444; font-weight: 600; font-size: 18px;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Error connecting to server
+                    </div>
+                    <div style="color: #64748b; font-size: 14px; margin-top: 10px;">Please try again later</div>
+                `;
+            } finally {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        });
+    </script>
+
 </body>
+
 </html>
